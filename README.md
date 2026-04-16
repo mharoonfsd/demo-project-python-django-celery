@@ -27,6 +27,12 @@ celery -A demo_project worker -l info
 ## Demonstrated Issues
 
 ### Question 1: bulk_create and Signals
+**Original Question:**
+> **Q:** Why does `bulk_create()` not trigger signals?
+> **A:** It bypasses ORM lifecycle.
+> **Explanation:** Django executes direct SQL.
+> **Fix:** Manually trigger logic or avoid bulk ops for critical flows.
+
 **Issue**: `Order.objects.bulk_create(orders_list)` doesn't trigger `post_save` signals.
 
 **Demo**: Run `python manage.py demo_bulk_create`
@@ -36,6 +42,11 @@ celery -A demo_project worker -l info
 - Regular `save()` does send notifications
 
 ### Question 2: Transactions and Celery Tasks
+**Original Question:**
+> **Q:** You override `save()` and also use signals. Which runs first?
+> **A:** `save()` → DB write → signals.
+> **Explanation:** Signals run after save lifecycle, causing possible overwrites.
+
 **Issue**: Celery tasks queued from `post_save` signals inside transactions may fail to find the object.
 
 **Demo**: Run `python manage.py demo_transaction`
@@ -45,6 +56,12 @@ celery -A demo_project worker -l info
 - Celery task may fail in production due to transaction isolation
 
 ### Question 3: Celery Retry Behavior
+**Original Question:**
+> **Q:** Why does `bulk_update()` not trigger signals?
+> **A:** It bypasses ORM lifecycle.
+> **Explanation:** Django executes direct SQL.
+> **Fix:** Manually trigger logic or avoid bulk ops for critical flows.
+
 **Issue**: Understanding how `max_retries=3` works.
 
 **Demo**: Run `python manage.py demo_retry`
@@ -54,6 +71,11 @@ celery -A demo_project worker -l info
 - Check Celery logs for retry attempts
 
 ### Question 4: SNS Duplicate Events
+**Original Question:**
+> **Q:** CASCADE not working?
+> **A:** Raw SQL or DB mismatch.
+> **Explanation:** ORM cascade differs from DB constraint.
+
 **Issue**: SNS can deliver events multiple times, causing duplicate processing.
 
 **Demo**: Run `python manage.py demo_sns_duplicates`
@@ -63,6 +85,14 @@ celery -A demo_project worker -l info
 - Potential duplicate database records and reports
 
 ### Question 5: ECS Backpressure
+**Original Question:**
+> **Q:** `select_related()` but still N+1?
+> **A:** Using M2M.
+> **Fix:**
+> ```python
+> Order.objects.prefetch_related('items')
+> ```
+
 **Issue**: ECS containers processing large Parquet files face backpressure and restarts.
 
 **Demo**: Run `python manage.py demo_ecs_backpressure`
