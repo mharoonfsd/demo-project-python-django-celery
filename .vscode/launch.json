@@ -22,11 +22,7 @@
             "name": "Django Debug Test",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/manage.py",
-            "args": [
-                "test"
-            ],
-            "django": true,
+            "program": "${workspaceFolder}/test_debug.py",
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal"
         },

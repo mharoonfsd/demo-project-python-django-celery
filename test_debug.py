@@ -22,11 +22,13 @@ print(f"URL: {url}")
 print(f"Data: {json.dumps(order_data, indent=2)}")
 
 try:
-    response = requests.post(url, json=order_data, headers=headers)
+    response = requests.post(url, json=order_data, headers=headers, timeout=5)
     print(f"Response status: {response.status_code}")
     print(f"Response body: {response.json()}")
 except requests.exceptions.ConnectionError:
     print("❌ Connection failed! Make sure Django server is running with debugger.")
     print("Run: F5 or Debug → Django")
+except requests.exceptions.Timeout:
+    print("Request timed out. Ensure Django server is running and responsive.")
 except Exception as e:
     print(f"Error: {e}")
