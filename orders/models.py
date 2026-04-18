@@ -21,6 +21,7 @@ class Order(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
     total = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
     created_at = models.DateTimeField(auto_now_add=True)
+    tax = models.ForeignKey('Tax', on_delete=models.CASCADE, null=True, blank=True, related_name='orders')
 
     def save(self, *args, **kwargs):
         # Check if we should skip signals
